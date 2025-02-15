@@ -1,4 +1,42 @@
 pipeline {
      agent any
      environment {
+          IMAGE_NAME = "my-app"
+          CONTAINER_NAME = "my-app-container"
+     }
+     stages{
+          stage('Clone Repository') {
+               steps{
+                    git 'https://github.com/priyanshuvatsyan/jenkins-docker-pipeline'
+               }
+          }
+     
+     stage('Build docker image) {
+          steps{
+               script{
+                    sh "docker build -t $IMAGE_NAME ." 
+                    }
+               }
+          }
+     stage('Run docker container')  {
+          steps{
+               script {
+                    sh "docker run -d --name $CONTAINER_NAME -p 8080:80 $IMAGE_NAME"
+                    }
+               }
+          }
+     stage('Cleanup')  {
+          steps{
+               script {
+                    sh "docker ps -a"
+                    }
+               }
+          }
+     }
+     post{
+          always{
+               echo 'Pipeline execution completed!'
+               }
+          }
+     }
           
