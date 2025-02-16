@@ -27,18 +27,20 @@ pipeline {
             }
         }
 
-        stage('Cleanup') {
-            steps {
-                script {
-                    sh "docker rm -f $CONTAINER_NAME || true"
-                }
-            }
-        }
+        
     }
 
     post {
         always {
             echo 'Pipeline execution completed!'
+        }
+    stage('Cleanup') {
+            steps {
+                script {
+                     sh "docker stop $CONTAINER_NAME || true"
+                     sh "docker rm $CONTAINER_NAME || true"
+                }
+            }
         }
     }
 }
